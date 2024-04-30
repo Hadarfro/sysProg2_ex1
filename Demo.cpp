@@ -4,13 +4,14 @@
  */
 
 #include "Graph.hpp"
-#include "Algorithms.hpp"
+#include "Algorithms.cpp"
 using namespace Algorithms;
 
 #include <iostream>
 #include <stdexcept>
 #include <vector>
 using namespace std;
+using namespace ariel;
 
 int main()
 {
