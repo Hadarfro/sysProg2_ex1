@@ -3,19 +3,19 @@
  * Author: Benjamin Saldman.
  */
 
-#include "Graph.hpp"
-#include "Algorithms.cpp"
-using namespace Algorithms;
-
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include "Graph.hpp"
+#include "Algorithms.hpp"
 using namespace std;
 using namespace ariel;
+using namespace Algorithms;
+
 
 int main()
 {
-    ariel::Graph g;
+    ariel::graph g;
     // 3x3 matrix that represents a connected graph.
     vector<vector<int>> graph = {
         {0, 1, 0},
