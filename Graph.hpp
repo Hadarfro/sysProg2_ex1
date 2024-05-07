@@ -11,10 +11,8 @@ namespace ariel{
             vector<vector<int>> adjMat; // Adjacency matrix that represent the edges of the graph
 
         public:
-            graph(int v,vector<vector<int>> g);
             graph();
             ~graph();
-            vector<vector<int>> buildNeighborMatrix();
             int printPath(std::vector<int>& parent, unsigned int u);
             void loadGraph(vector<vector<int>> g);
             void printGraph();

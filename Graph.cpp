@@ -32,7 +32,8 @@ namespace ariel{
                 if (DFSFindCycle(i, visited, parent)) {
                     return true;
                 }
-            } else if (parent[u] != i) {
+            } 
+            else if (parent[u] != i) {
                 return true;
             }
         }
@@ -89,13 +90,15 @@ namespace ariel{
 
     void graph::printGraph(){//print the number of vertex and edges
         // Print the neighbor matrix
-        cout << "Neighbor Matrix:" << std::endl;
+        int count = 0;
         for (unsigned int i = 0; i < this->V; ++i) {
             for (unsigned int j = 0; j < this->V; ++j) {
-                std::cout << this->adjMat[i][j] << " ";
+                if(this->adjMat[i][j] != 0){
+                    count++;
+                }
             }
-            cout << endl;
         }
+        cout << "Graph with " << this->V << " vertices and " << count << " edges" << endl;
     }
     
 };

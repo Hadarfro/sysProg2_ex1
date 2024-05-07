@@ -2,6 +2,7 @@
 #include <vector>
 #include <queue>
 #include <limits>
+#include <unordered_set>
 #include "Algorithms.hpp"
 #include "Graph.hpp"
 
@@ -74,31 +75,54 @@ namespace Algorithms{
         }
 
         // If endVertex is unreachable from startVertex, return -1
+        cout<<"-1"<<endl;
         return -1;
         }
 
         int isContainsCycle(ariel::graph g){//problem!!!!!!!!!!!!!!!!
-            // std::vector<int>::size_type v = (std::vector<int>::size_type)g.getV();
-            // std::vector<int> parent(v, -1);
-            // std::vector<bool> visited(v, false);
-            // std::vector<int> cyclePath; // Vector to store the cycle path
+            std::vector<int>::size_type V = (std::vector<int>::size_type)g.getV();
+            for (std::vector<int>::size_type i = 0; i < V; ++i) {
+                vector<bool> visited(V, false);
+                queue<int> q;
+                q.push(i);
+                visited[i] = true;
+                unordered_set<int> cycleVertices;
 
-            // for (std::vector<int>::size_type u = 0; u < v; ++u){
-            //     // If vertex u is not visited, perform DFS traversal from u
-            //     if (!visited[u]) {
-            //         // if (g.DFSFindCycle(g.getAdjMat(), u, -1, visited, cyclePath)) {
-            //         //     // If a cycle is found, print the cycle path
-            //         //     std::cout << "Cycle found: ";
-            //         //     for (int vertex : cyclePath) {
-            //         //         std::cout << vertex << " ";
-            //         //     }
-            //         //     std::cout << std::endl;
-            //         //     return 1; // Return 1 to indicate a cycle is found
-            //         // }
-            //     }
-            // }
-        return 0;
-    }
+                while (!q.empty()) {
+                    std::vector<int>::size_type u = (std::vector<int>::size_type)q.front();
+                    q.pop();
+
+                    for (std::vector<int>::size_type v : g.getAdjMat()[u]) {
+                        if (!visited[v]) {
+                            visited[v] = true;
+                            q.push(v);
+                        } 
+                        else if (v != u) { // Found a back edge (cycle)
+                            // Construct cycle
+                            cycleVertices.clear();
+                            cycleVertices.insert(u);
+                            cycleVertices.insert(v);
+                            std::vector<int>::size_type parent = u;
+                            while (parent != v) {
+                                parent = (std::vector<int>::size_type)g.getAdjMat()[parent][0]; // Assuming only one parent
+                                cycleVertices.insert(parent);
+                            }
+
+                            // Print cycle
+                            cout << "Cycle found: ";
+                            for (std::vector<int>::size_type vertex : cycleVertices) {
+                                cout << vertex << " ";
+                            }
+                            cout << endl;
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            cout << "No cycle found" << endl;
+            return false;
+        }
 
     int isBipartite(ariel::graph g){
         // int n = g.getV();
@@ -131,6 +155,35 @@ namespace Algorithms{
     }
 
     int negativeCycle(ariel::graph g){//do relax v times and check if in the last relax there was a change
-        return 0;
+        int V = g.getV();
+
+        // Perform relaxation n-1 times for every vertex
+        for (vector<int>::size_type k = 0; k < V - 1; ++k) {
+            for (vector<int>::size_type u = 0; u < V; ++u) {
+                for (vector<int>::size_type v = 0; v < V; ++v) {
+                    // Update the distance if a shorter path is found
+                    if (g.getAdjMat()[u][k] != std::numeric_limits<int>::max() &&
+                        g.getAdjMat()[k][v] != std::numeric_limits<int>::max() &&
+                        g.getAdjMat()[u][k] + g.getAdjMat()[k][v] < g.getAdjMat()[u][v]) {
+                        g.getAdjMat()[u][v] = g.getAdjMat()[u][k] + g.getAdjMat()[k][v];
+                    }
+                }
+            }
+        }
+
+        // Perform relaxation one last time and check for changes
+        bool changed = false;
+        for (vector<int>::size_type u = 0; u < V; ++u) {
+            for (vector<int>::size_type v = 0; v < V; ++v) {
+                if (g.getAdjMat()[u][v] != std::numeric_limits<int>::max() &&
+                    g.getAdjMat()[u][v] != g.getAdjMat()[u][v]) {
+                    // There was a change in the graph
+                    changed = true;
+                    g.getAdjMat()[u][v] = g.getAdjMat()[u][v];
+                }
+            }
+        }
+
+        return changed;
     }
 }
