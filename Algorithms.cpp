@@ -78,16 +78,25 @@ namespace Algorithms{
         }
 
         int isContainsCycle(ariel::graph g){//problem!!!!!!!!!!!!!!!!
-            std::vector<int>::size_type v = (std::vector<int>::size_type)g.getV();
-            std::vector<int> parent(v, -1);
-            std::vector<bool> visited(v, false);
+            // std::vector<int>::size_type v = (std::vector<int>::size_type)g.getV();
+            // std::vector<int> parent(v, -1);
+            // std::vector<bool> visited(v, false);
+            // std::vector<int> cyclePath; // Vector to store the cycle path
 
-            for (std::vector<int>::size_type u = 0; u < v; ++u){
-                if (!visited[u] && g.DFSFindCycle(u, visited, parent)) {
-                    return g.printPath(parent, u);
-                }
-            }
-
+            // for (std::vector<int>::size_type u = 0; u < v; ++u){
+            //     // If vertex u is not visited, perform DFS traversal from u
+            //     if (!visited[u]) {
+            //         // if (g.DFSFindCycle(g.getAdjMat(), u, -1, visited, cyclePath)) {
+            //         //     // If a cycle is found, print the cycle path
+            //         //     std::cout << "Cycle found: ";
+            //         //     for (int vertex : cyclePath) {
+            //         //         std::cout << vertex << " ";
+            //         //     }
+            //         //     std::cout << std::endl;
+            //         //     return 1; // Return 1 to indicate a cycle is found
+            //         // }
+            //     }
+            // }
         return 0;
     }
 
