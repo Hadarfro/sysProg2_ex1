@@ -14,7 +14,6 @@ using namespace Algorithms;
 
 int main()
 {
-    
     ariel::graph g;
     // 3x3 matrix that represents a connected graph.
     vector<vector<int>> graph = {

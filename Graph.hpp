@@ -14,12 +14,11 @@ namespace ariel{
             graph(int v,vector<vector<int>> g);
             graph();
             ~graph();
-            void addEdge(int u, int v);
             vector<vector<int>> buildNeighborMatrix();
             int printPath(std::vector<int>& parent, unsigned int u);
             void loadGraph(vector<vector<int>> g);
             void printGraph();
-            void DFS(int v, bool visited[]);
+            void DFS(unsigned int v, bool visited[]);
             int getV();
             vector<vector<int>> getAdjMat();
             bool DFSFindCycle(unsigned int u, std::vector<bool>& visited, std::vector<int>& parent);

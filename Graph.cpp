@@ -14,20 +14,12 @@ namespace ariel{
         this->adjMat.clear();
     }
 
-    // Function to add an edge to the graph
-    void graph::addEdge(int u, int v) {
-        adjMat[u][v] = 1;
-        adjMat[v][u] = 1; // If it's an undirected graph
-        this->V++;
-    }
-
-
     // Depth-First Search (DFS)
-    void graph::DFS(int v, bool visited[]) {
+    void graph::DFS(unsigned int v, bool visited[]) {
         visited[v] = true;
         for (unsigned int i = 0; i < V; ++i) {
-            if (adjMat[v][i] && !visited[i]) {
-                DFS((int)i, visited);
+            if (this->adjMat[v][i] && !visited[i]) {
+                DFS(i, visited);
             }
         }
     }
@@ -79,33 +71,26 @@ namespace ariel{
 
     void graph::loadGraph(vector<vector<int>> g) {
         // Reinitialize the current graph object with the new graph data
+        
         this->V = g.size();
 
-        // Deallocate memory for the existing adjacency matrix
-        for (unsigned int i = 0; i < V; ++i) {
-            delete[] adjMat.at(i);
-        }
-        delete[] adjMat;
-
-        // Dynamically allocate memory for the new adjacency matrix
-        adjMat = new int*[V];
-        for (unsigned int i = 0; i < V; ++i) {
-            adjMat[i] = new int[V];
+        for (unsigned int i = 0; i < V; ++i) {//problem!!!!!!!!!!!
             // Initialize all elements to 0
             for (unsigned int j = 0; j < V; ++j) {
-                adjMat[i][j] = g[i][j];
+                this->adjMat[i][j] = g[i][j];
             }
         }
+        cout << "test" << std::endl;
     }
 
     void graph::printGraph(){//print the number of vertex and edges
         // Print the neighbor matrix
-        std::cout << "Neighbor Matrix:" << std::endl;
+        cout << "Neighbor Matrix:" << std::endl;
         for (unsigned int i = 0; i < this->V; ++i) {
             for (unsigned int j = 0; j < this->V; ++j) {
                 std::cout << this->adjMat[i][j] << " ";
             }
-            std::cout << std::endl;
+            cout << endl;
         }
     }
     
