@@ -10,12 +10,12 @@ namespace ariel{
         this->adjMat =NULL;
     }
     // Destructor to deallocate memory
-    graph::~graph() {
-        for (int i = 0; i < V; ++i) {
-            delete[] adjMat[i];
-        }
-        delete[] adjMat;
-    }
+    // graph::~graph() {
+    //     for (int i = 0; i < V; ++i) {
+    //         delete[] adjMat[i];
+    //     }
+    //     delete[] adjMat;
+    // }
 
     // Function to add an edge to the graph
     void graph::addEdge(int u, int v) {
