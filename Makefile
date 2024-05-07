@@ -22,7 +22,7 @@ valgrind: demo test
 	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test 2>&1 | { egrep "lost| at " || true; }
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< 
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 clean:
 	rm -f *.o demo test
