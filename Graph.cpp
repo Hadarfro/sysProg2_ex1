@@ -74,13 +74,17 @@ namespace ariel{
         
         this->V = g.size();
 
-        for (unsigned int i = 0; i < V; ++i) {//problem!!!!!!!!!!!
-            // Initialize all elements to 0
-            for (unsigned int j = 0; j < V; ++j) {
-                this->adjMat[i][j] = g[i][j];
+        for (const auto& row : g) {
+            // Create a new row vector for the copy
+            vector<int> rowCopy;
+
+            // Iterate over each element in the row and copy it
+            for (int value : row) {
+                rowCopy.push_back(value);
             }
+            // Add the copied row to the copy vector
+            this->adjMat.push_back(rowCopy);
         }
-        cout << "test" << std::endl;
     }
 
     void graph::printGraph(){//print the number of vertex and edges

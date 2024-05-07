@@ -17,53 +17,76 @@ namespace Algorithms{
         for (std::vector<int>::size_type i = 0; i < g.getV(); i++){
             if (!visited[i]) {
                 delete[] visited;
+                cout<<"false"<<endl;
                 return false;
             }
         }
         delete[] visited;
+        cout<<"true"<<endl;
         return true;
     }
 
     int shortestPath(ariel::graph g,std::vector<int>::size_type start,std::vector<int>::size_type end){//use bellman-ford
-        std::vector<int>::size_type V = (std::vector<int>::size_type)g.getV();
-        std::vector<int> dist(V, std::numeric_limits<int>::max());
-        std::vector<bool> visited(V, false);
-        dist[start] = 0;
-        for(int i = 0; i < V - 1; ++i) {
-            std::vector<int>::size_type minDist = std::numeric_limits<int>::max();
-            std::vector<int>::size_type minIndex = static_cast<std::vector<int>::size_type>(-1);
-            // Find the vertex with the minimum distance
-            for (std::vector<int>::size_type j = 0; j < V; ++j) {
-                if (!visited[j] && dist[j] < minDist) {
-                    minDist = static_cast<std::vector<int>::size_type>(dist[j]);
-                    minIndex = j;
+        std::vector<int>::size_type numVertices = (std::vector<int>::size_type)g.getV();
+
+        // Queue for BFS traversal
+        std::queue<int> q;
+
+        // Array to keep track of visited vertices
+        std::vector<bool> visited(numVertices, false);
+
+        // Array to keep track of distances from startVertex
+        std::vector<int> distance(numVertices, std::numeric_limits<int>::max());
+
+        // Enqueue the startVertex and mark it as visited with distance 0
+        q.push(start);
+        visited[start] = true;
+        distance[start] = 0;
+
+        // Perform BFS
+        while (!q.empty()) {
+            std::vector<int>::size_type u = (std::vector<int>::size_type)q.front();
+            q.pop();
+
+            if (u == end) {
+                // Print the shortest path
+                std::cout << "Shortest path between " << start << " and " << end << " is: ";
+                std::cout << u;
+                std::vector<int>::size_type parent = (std::vector<int>::size_type)distance[u];
+                while (parent != start) {
+                    std::cout << " <- " << parent;
+                    parent = (std::vector<int>::size_type)distance[parent];
+                }
+                std::cout << " <- " << start << std::endl;
+                return 1; // Return the destination vertex
+            }
+
+            // Visit all adjacent vertices of u
+            for (std::vector<int>::size_type v = 0; v < numVertices; ++v) {
+                 // Check if v is adjacent to u and not visited yet
+                if (g.getAdjMat()[u][v] && !visited[v]) {
+                    // Enqueue v, mark it as visited, and update its distance
+                    q.push(v);
+                    visited[v] = true;
+                    distance[v] = u;
                 }
             }
-            visited[(decltype(visited.size()))minIndex] = true;
-            // Update distances for adjacent vertices
-            for (std::vector<int>::size_type j = 0; j < V; ++j) {
-                if (!visited[j] && g.getAdjMat()[minIndex][j] != std::numeric_limits<int>::max() &&
-                    dist[minIndex] + g.getAdjMat()[minIndex][j] < dist[j]) {
-                    dist[j] = dist[minIndex] + g.getAdjMat()[minIndex][j];
+        }
+
+        // If endVertex is unreachable from startVertex, return -1
+        return -1;
+        }
+
+        int isContainsCycle(ariel::graph g){//problem!!!!!!!!!!!!!!!!
+            std::vector<int>::size_type v = (std::vector<int>::size_type)g.getV();
+            std::vector<int> parent(v, -1);
+            std::vector<bool> visited(v, false);
+
+            for (std::vector<int>::size_type u = 0; u < v; ++u){
+                if (!visited[u] && g.DFSFindCycle(u, visited, parent)) {
+                    return g.printPath(parent, u);
                 }
             }
-        }
-        if(dist[end] == 0){
-            return -1;
-        }
-        return dist[end];
-    }
-
-    int isContainsCycle(ariel::graph g){
-        std::vector<int>::size_type v = (std::vector<int>::size_type)g.getV();
-        std::vector<int> parent(v, -1);
-        std::vector<bool> visited(v, false);
-
-        for (std::vector<int>::size_type u = 0; u < v; ++u){
-            if (!visited[u] && g.DFSFindCycle(u, visited, parent)) {
-                return g.printPath(parent, u);
-            }
-        }
 
         return 0;
     }
