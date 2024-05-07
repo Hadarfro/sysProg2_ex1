@@ -69,31 +69,31 @@ namespace Algorithms{
     }
 
     int isBipartite(ariel::graph g){
-        int n = g.getV();
-        vector<int> colors(n, -1); // Colors of vertices: -1 (unvisited), 0 and 1 (color groups)
+        // int n = g.getV();
+        // vector<int> colors(n, -1); // Colors of vertices: -1 (unvisited), 0 and 1 (color groups)
 
-        for (int i = 0; i < n; ++i) {
-            if (colors[i] == -1) { // If vertex i is unvisited, start BFS from it
-                queue<int> q;
-                q.push(i);
-                colors[i] = 0; // Assign color 0 to vertex i
+        // for (int i = 0; i < n; ++i) {
+        //     if (colors[i] == -1) { // If vertex i is unvisited, start BFS from it
+        //         queue<int> q;
+        //         q.push(i);
+        //         colors[i] = 0; // Assign color 0 to vertex i
 
-                while (!q.empty()) {
-                    int u = q.front();
-                    q.pop();
+        //         while (!q.empty()) {
+        //             int u = q.front();
+        //             q.pop();
 
-                    for (int v = 0 ; i < n ;i++) {
-                        if (colors[v] == -1) { // If vertex v is unvisited
-                            colors[v] = 1 - colors[u]; // Assign opposite color to vertex v
-                            q.push(v);
-                        } 
-                        else if (colors[v] == colors[u]) { // If adjacent vertices have the same color
-                            return false; // Graph is not bipartite
-                        }
-                    }
-                }
-            }
-        }
+        //             for (int v = 0 ; i < n ;i++) {
+        //                 if (colors[v] == -1) { // If vertex v is unvisited
+        //                     colors[v] = 1 - colors[u]; // Assign opposite color to vertex v
+        //                     q.push(v);
+        //                 } 
+        //                 else if (colors[v] == colors[u]) { // If adjacent vertices have the same color
+        //                     return false; // Graph is not bipartite
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         return true; // Graph is bipartite
     }

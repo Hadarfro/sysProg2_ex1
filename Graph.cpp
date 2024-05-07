@@ -7,15 +7,12 @@ using namespace std;
 namespace ariel{
     graph::graph(){//defult constractor
         this->V = 0;
-        this->adjMat =NULL;
+        this->adjMat.clear();
     }
     // Destructor to deallocate memory
-    // graph::~graph() {
-    //     for (int i = 0; i < V; ++i) {
-    //         delete[] adjMat[i];
-    //     }
-    //     delete[] adjMat;
-    // }
+    graph::~graph() {
+        this->adjMat.clear();
+    }
 
     // Function to add an edge to the graph
     void graph::addEdge(int u, int v) {
@@ -76,7 +73,7 @@ namespace ariel{
         return this->V;
     }
 
-    int** graph::getAdjMat(){
+    vector<vector<int>> graph::getAdjMat(){
         return this->adjMat;
     }
 
@@ -86,7 +83,7 @@ namespace ariel{
 
         // Deallocate memory for the existing adjacency matrix
         for (unsigned int i = 0; i < V; ++i) {
-            delete[] adjMat[i];
+            delete[] adjMat.at(i);
         }
         delete[] adjMat;
 
@@ -114,39 +111,39 @@ namespace ariel{
     
 };
 
-using namespace ariel;
-int main() { // Create a graph with 5 vertices
-    vector<vector<int>> mygraph = {
-        {0, 1, 0},
-        {1, 0, 1},
-        {0, 1, 0}
-    };
-    ariel::graph g(5,mygraph);
+// using namespace ariel;
+// int main() { // Create a graph with 5 vertices
+//     vector<vector<int>> mygraph = {
+//         {0, 1, 0},
+//         {1, 0, 1},
+//         {0, 1, 0}
+//     };
+//     ariel::graph g(5,mygraph);
 
-    // Add edges
-    g.addEdge(0, 1);
-    g.addEdge(0, 2);
-    g.addEdge(1, 3);
-    g.addEdge(2, 3);
-    g.addEdge(3, 4);
+//     // Add edges
+//     g.addEdge(0, 1);
+//     g.addEdge(0, 2);
+//     g.addEdge(1, 3);
+//     g.addEdge(2, 3);
+//     g.addEdge(3, 4);
 
-    // Build the neighbor matrix
-    int** neighborMatrix = g.buildNeighborMatrix();
+//     // Build the neighbor matrix
+//     int** neighborMatrix = g.buildNeighborMatrix();
 
-    // Print the neighbor matrix
-    std::cout << "Neighbor Matrix:" << std::endl;
-    for (int i = 0; i < 5; ++i) {
-        for (int j = 0; j < 5; ++j) {
-            std::cout << neighborMatrix[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
+//     // Print the neighbor matrix
+//     std::cout << "Neighbor Matrix:" << std::endl;
+//     for (int i = 0; i < 5; ++i) {
+//         for (int j = 0; j < 5; ++j) {
+//             std::cout << neighborMatrix[i][j] << " ";
+//         }
+//         std::cout << std::endl;
+//     }
 
-    // Deallocate memory for neighbor matrix
-    for (int i = 0; i < 5; ++i) {
-        delete[] neighborMatrix[i];
-    }
-    delete[] neighborMatrix;
+//     // Deallocate memory for neighbor matrix
+//     for (int i = 0; i < 5; ++i) {
+//         delete[] neighborMatrix[i];
+//     }
+//     delete[] neighborMatrix;
 
-    return 0;
-}
+//     return 0;
+// }
