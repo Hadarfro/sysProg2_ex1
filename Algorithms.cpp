@@ -81,6 +81,12 @@ namespace Algorithms{
 
         int isContainsCycle(ariel::graph g){//problem!!!!!!!!!!!!!!!!
             std::vector<int>::size_type V = (std::vector<int>::size_type)g.getV();
+            vector<vector<int>> mat(V,vector<int>(V));
+            for (unsigned int i = 0; i < V; ++i) {
+                for (unsigned int j = 0; j < V; ++j) {
+                    mat[i][j] = g.getAdjMat()[i][j];
+                }
+            }
             for (std::vector<int>::size_type i = 0; i < V; ++i) {
                 vector<bool> visited(V, false);
                 queue<int> q;
@@ -92,9 +98,9 @@ namespace Algorithms{
                     std::vector<int>::size_type u = (std::vector<int>::size_type)q.front();
                     q.pop();
 
-                    for (std::vector<int>::size_type v : g.getAdjMat()[u]) {
-                        if (!visited[v]) {
-                            visited[v] = true;
+                    for (int v : mat[u]) {
+                        if (!visited[static_cast<std::vector<bool>::size_type>(v)]){
+                            visited[static_cast<std::vector<bool>::size_type>(v)] = true;
                             q.push(v);
                         } 
                         else if (v != u) { // Found a back edge (cycle)
@@ -104,13 +110,13 @@ namespace Algorithms{
                             cycleVertices.insert(v);
                             std::vector<int>::size_type parent = u;
                             while (parent != v) {
-                                parent = (std::vector<int>::size_type)g.getAdjMat()[parent][0]; // Assuming only one parent
+                                parent = (std::vector<int>::size_type)mat[parent][0]; // Assuming only one parent
                                 cycleVertices.insert(parent);
                             }
 
                             // Print cycle
                             cout << "Cycle found: ";
-                            for (std::vector<int>::size_type vertex : cycleVertices) {
+                            for (int vertex : cycleVertices) {
                                 cout << vertex << " ";
                             }
                             cout << endl;

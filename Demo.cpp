@@ -25,7 +25,7 @@ int main()
     g.printGraph();                    // Should print: "Graph with 3 vertices and 4 edges."
     Algorithms::isConnected(g);        // Should print: "1" (true).
     Algorithms::shortestPath(g, 0, 2); // Should print: 0->1->2.
-    cout << Algorithms::isContainsCycle(g) << endl;    // Should print: "0" (false).
+    Algorithms::isContainsCycle(g);    // Should print: "0" (false).
     cout << Algorithms::isBipartite(g) << endl;        // Should print: "The graph is bipartite: A={0, 2}, B={1}."
     cout<< Algorithms::negativeCycle(g) << endl;
 
