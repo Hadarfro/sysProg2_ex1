@@ -2,12 +2,15 @@
 #include <vector>
 #include <queue>
 #include <limits>
+#include <stack>
+#include <unordered_set>
 #include <unordered_set>
 #include "Algorithms.hpp"
 #include "Graph.hpp"
 
 using namespace std;
 using namespace ariel;
+enum class State { UNDISCOVERED, DISCOVERED, PROCESSED };
 
 namespace Algorithms{
     int isConnected(ariel::graph g){
@@ -80,54 +83,34 @@ namespace Algorithms{
         }
 
         int isContainsCycle(ariel::graph g){//problem!!!!!!!!!!!!!!!!
-            std::vector<int>::size_type V = (std::vector<int>::size_type)g.getV();
-            vector<vector<int>> mat(V,vector<int>(V));
-            for (unsigned int i = 0; i < V; ++i) {
-                for (unsigned int j = 0; j < V; ++j) {
-                    mat[i][j] = g.getAdjMat()[i][j];
-                }
-            }
-            for (std::vector<int>::size_type i = 0; i < V; ++i) {
-                vector<bool> visited(V, false);
-                queue<int> q;
-                q.push(i);
-                visited[i] = true;
-                unordered_set<int> cycleVertices;
+            int n = g.getV();
+            vector<State> state(n, State::UNDISCOVERED);
+            vector<int> parent(n, -1);
 
-                while (!q.empty()) {
-                    std::vector<int>::size_type u = (std::vector<int>::size_type)q.front();
-                    q.pop();
+            bool hasBackEdge = false;
 
-                    for (int v : mat[u]) {
-                        if (!visited[static_cast<std::vector<bool>::size_type>(v)]){
-                            visited[static_cast<std::vector<bool>::size_type>(v)] = true;
-                            q.push(v);
-                        } 
-                        else if (v != u) { // Found a back edge (cycle)
-                            // Construct cycle
-                            cycleVertices.clear();
-                            cycleVertices.insert(u);
-                            cycleVertices.insert(v);
-                            std::vector<int>::size_type parent = u;
-                            while (parent != v) {
-                                parent = (std::vector<int>::size_type)mat[parent][0]; // Assuming only one parent
-                                cycleVertices.insert(parent);
-                            }
+            function<void(int)> dfs = [&](int node) {
+                state[node] = State::DISCOVERED;
 
-                            // Print cycle
-                            cout << "Cycle found: ";
-                            for (int vertex : cycleVertices) {
-                                cout << vertex << " ";
-                            }
-                            cout << endl;
-                            return true;
-                        }
+                for (int neighbor : g.getAdjMat()[node]) {
+                    if (state[neighbor] == State::UNDISCOVERED) {
+                        parent[neighbor] = node;
+                        dfs(neighbor);
+                    } else if (state[neighbor] == State::DISCOVERED && parent[node] != neighbor) {
+                        hasBackEdge = true;
                     }
                 }
+
+                state[node] = State::PROCESSED;
+            };
+
+            for (int i = 0; i < n; ++i) {
+                if (state[i] == State::UNDISCOVERED) {
+                    dfs(i);
+                }
             }
 
-            cout << "No cycle found" << endl;
-            return false;
+            return hasBackEdge;
         }
 
     int isBipartite(ariel::graph g){

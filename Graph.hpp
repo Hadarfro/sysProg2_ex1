@@ -4,6 +4,7 @@
 #define GRAPH_HPP
 
 using namespace std; 
+enum class State { UNDISCOVERED, DISCOVERED, PROCESSED };
 namespace ariel{
     class graph{
         private:
@@ -11,6 +12,7 @@ namespace ariel{
             vector<vector<int>> adjMat; // Adjacency matrix that represent the edges of the graph
 
         public:
+            
             graph();
             ~graph();
             int printPath(std::vector<int>& parent, unsigned int u);
@@ -19,7 +21,7 @@ namespace ariel{
             void DFS(unsigned int v, bool visited[]);
             int getV();
             vector<vector<int>> getAdjMat();
-            bool DFSFindCycle(unsigned int u, std::vector<bool>& visited, std::vector<int>& parent);
+            bool hasCycleDFS(int node, vector<vector<int>>& graph, vector<State>& state);
     };
 };
 #endif // GRAPH_HPP

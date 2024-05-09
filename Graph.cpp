@@ -1,9 +1,12 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <stack>
+#include <unordered_set>
 #include "Graph.hpp"
 
 using namespace std;
+enum class State { UNDISCOVERED, DISCOVERED, PROCESSED };
 namespace ariel{
     graph::graph(){//defult constractor
         this->V = 0;
@@ -24,22 +27,20 @@ namespace ariel{
         }
     }
 
-        bool graph::DFSFindCycle(unsigned int u, std::vector<bool>& visited, std::vector<int>& parent) {
-        visited[u] = true;
-        for (unsigned int i = 0;i < this->V;i++) {
-            if (!visited[i] && i != u) {
-                parent[i] = (int)u;
-                if (DFSFindCycle(i, visited, parent)) {
-                    return true;
-                }
-            } 
-            else if (parent[u] != i) {
-                return true;
-            }
-        }
+        bool graph::hasCycleDFS(int node, vector<vector<int>>& graph, vector<State>& state){/
+            state[node] = State::VISITING; // Mark node as visiting
 
-        return false;
-    }
+            for (int neighbor : graph[node]) {
+                if (state[neighbor] == State::VISITING) {
+                    return true; // Found a back edge, cycle detected
+                } else if (state[neighbor] == State::UNVISITED && hasCycleDFS(neighbor, graph, state)) {
+                    return true; // Cycle detected in neighbor's subtree
+                }
+            }
+
+            state[node] = State::VISITED; // Mark node as visited
+            return false;
+        }
 
     int graph::printPath(std::vector<int>& parent, unsigned int u) {
         std::vector<int> path;
