@@ -6,8 +6,9 @@
 #include "Graph.hpp"
 
 using namespace std;
-enum class State { UNDISCOVERED, DISCOVERED, PROCESSED };
+
 namespace ariel{
+    enum class State { VISITING, UNVISITED, VISITED };
     graph::graph(){//defult constractor
         this->V = 0;
         this->adjMat.clear();
@@ -27,7 +28,7 @@ namespace ariel{
         }
     }
 
-        bool graph::hasCycleDFS(int node, vector<vector<int>>& graph, vector<State>& state){/
+        bool graph::hasCycleDFS(unsigned int node, vector<vector<int>>& graph, vector<State>& state){
             state[node] = State::VISITING; // Mark node as visiting
 
             for (int neighbor : graph[node]) {

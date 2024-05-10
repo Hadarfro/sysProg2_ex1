@@ -10,7 +10,7 @@
 
 using namespace std;
 using namespace ariel;
-enum class State { UNDISCOVERED, DISCOVERED, PROCESSED };
+
 
 namespace Algorithms{
     int isConnected(ariel::graph g){
@@ -88,21 +88,18 @@ namespace Algorithms{
             vector<int> parent(n, -1);
 
             bool hasBackEdge = false;
-
-            function<void(int)> dfs = [&](int node) {
                 state[node] = State::DISCOVERED;
 
                 for (int neighbor : g.getAdjMat()[node]) {
                     if (state[neighbor] == State::UNDISCOVERED) {
                         parent[neighbor] = node;
-                        dfs(neighbor);
+                        g.DFS(neighbor,state);
                     } else if (state[neighbor] == State::DISCOVERED && parent[node] != neighbor) {
                         hasBackEdge = true;
                     }
                 }
 
-                state[node] = State::PROCESSED;
-            };
+            state[node] = State::PROCESSED;
 
             for (int i = 0; i < n; ++i) {
                 if (state[i] == State::UNDISCOVERED) {
