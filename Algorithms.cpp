@@ -4,9 +4,9 @@
 #include <limits>
 #include <stack>
 #include <unordered_set>
-#include <unordered_set>
 #include "Algorithms.hpp"
 #include "Graph.hpp"
+const int INF = numeric_limits<int>::max(); // Represents infinity
 
 using namespace std;
 using namespace ariel;
@@ -31,145 +31,163 @@ namespace Algorithms{
     }
 
     int shortestPath(ariel::graph g,std::vector<int>::size_type start,std::vector<int>::size_type end){//use bellman-ford
-        std::vector<int>::size_type numVertices = (std::vector<int>::size_type)g.getV();
+        vector<int>::size_type n = (vector<int>::size_type)g.getV();
 
-        // Queue for BFS traversal
-        std::queue<int> q;
+        // Initialize distances with infinity
+        vector<int> dist(n, INF);
+        dist[start] = 0;
 
-        // Array to keep track of visited vertices
-        std::vector<bool> visited(numVertices, false);
-
-        // Array to keep track of distances from startVertex
-        std::vector<int> distance(numVertices, std::numeric_limits<int>::max());
-
-        // Enqueue the startVertex and mark it as visited with distance 0
-        q.push(start);
-        visited[start] = true;
-        distance[start] = 0;
-
-        // Perform BFS
-        while (!q.empty()) {
-            std::vector<int>::size_type u = (std::vector<int>::size_type)q.front();
-            q.pop();
-
-            if (u == end) {
-                // Print the shortest path
-                std::cout << "Shortest path between " << start << " and " << end << " is: ";
-                std::cout << u;
-                std::vector<int>::size_type parent = (std::vector<int>::size_type)distance[u];
-                while (parent != start) {
-                    std::cout << " <- " << parent;
-                    parent = (std::vector<int>::size_type)distance[parent];
-                }
-                std::cout << " <- " << start << std::endl;
-                return 1; // Return the destination vertex
-            }
-
-            // Visit all adjacent vertices of u
-            for (std::vector<int>::size_type v = 0; v < numVertices; ++v) {
-                 // Check if v is adjacent to u and not visited yet
-                if (g.getAdjMat()[u][v] && !visited[v]) {
-                    // Enqueue v, mark it as visited, and update its distance
-                    q.push(v);
-                    visited[v] = true;
-                    distance[v] = u;
-                }
-            }
-        }
-
-        // If endVertex is unreachable from startVertex, return -1
-        cout<<"-1"<<endl;
-        return -1;
-        }
-
-        int isContainsCycle(ariel::graph g){//problem!!!!!!!!!!!!!!!!
-            int n = g.getV();
-            vector<State> state(n, State::UNDISCOVERED);
-            vector<int> parent(n, -1);
-
-            bool hasBackEdge = false;
-                state[node] = State::DISCOVERED;
-
-                for (int neighbor : g.getAdjMat()[node]) {
-                    if (state[neighbor] == State::UNDISCOVERED) {
-                        parent[neighbor] = node;
-                        g.DFS(neighbor,state);
-                    } else if (state[neighbor] == State::DISCOVERED && parent[node] != neighbor) {
-                        hasBackEdge = true;
+        // Relax edges repeatedly n-1 times
+        for (vector<int>::size_type i = 0; i < n - 1; ++i) {
+            for (vector<int>::size_type u = 0; u < n; ++u) {
+                for (vector<int>::size_type v = 0; v < n; ++v) {
+                    if (g.getAdjMat()[u][v] != INF && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
+                        dist[v] = dist[u] + g.getAdjMat()[u][v]; // Relax edge
                     }
                 }
-
-            state[node] = State::PROCESSED;
-
-            for (int i = 0; i < n; ++i) {
-                if (state[i] == State::UNDISCOVERED) {
-                    dfs(i);
-                }
             }
-
-            return hasBackEdge;
         }
 
-    int isBipartite(ariel::graph g){
-        // int n = g.getV();
-        // vector<int> colors(n, -1); // Colors of vertices: -1 (unvisited), 0 and 1 (color groups)
+        // Check for negative cycles
+        for (vector<int>::size_type u = 0; u < n; ++u) {
+            for (vector<int>::size_type v = 0; v < n; ++v) {
+                if (g.getAdjMat()[u][v] != INF && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
+                    // Negative cycle detected
+                    cout << "Graph contains negative cycle." << endl;
+                    return -1;
+                }
+            }
+        }
 
-        // for (int i = 0; i < n; ++i) {
-        //     if (colors[i] == -1) { // If vertex i is unvisited, start BFS from it
-        //         queue<int> q;
-        //         q.push(i);
-        //         colors[i] = 0; // Assign color 0 to vertex i
+        // Reconstruct the shortest path
+        vector<int> shortestPath;
+        vector<int>::size_type cur = (vector<int>::size_type)end;
+        while (cur != start){
+            shortestPath.push_back(cur);
+            for (vector<int>::size_type v = 0; v < n; ++v) {
+                if (g.getAdjMat()[v][cur] != INF && dist[cur] == dist[v] + g.getAdjMat()[v][cur]) {
+                    cur = v;
+                    break;
+                }
+            }
+        }
+        shortestPath.push_back(start);
+        //reverse(shortestPath.begin(), shortestPath.end());
+        if (!shortestPath.empty()) {
+            cout << "Shortest path from " << start << " to " << end << ": ";
+            for (vector<int>::size_type i = 0; i < shortestPath.size(); ++i) {
+                cout << shortestPath[i];
+                if (i < shortestPath.size() - 1){
+                    cout << " <- ";
+                }
+            }
+            cout << endl;
+        }
+        return 1;
+    }
 
-        //         while (!q.empty()) {
-        //             int u = q.front();
-        //             q.pop();
+    bool hasCycleDFS( vector<vector<int>> graph, vector<int>::size_type u, vector<int>::size_type parent, vector<bool>& visited) {
+        visited[u] = true;
 
-        //             for (int v = 0 ; i < n ;i++) {
-        //                 if (colors[v] == -1) { // If vertex v is unvisited
-        //                     colors[v] = 1 - colors[u]; // Assign opposite color to vertex v
-        //                     q.push(v);
-        //                 } 
-        //                 else if (colors[v] == colors[u]) { // If adjacent vertices have the same color
-        //                     return false; // Graph is not bipartite
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        for (vector<int>::size_type v = 0; v < graph.size(); ++v) {
+            if (graph[u][v] && !visited[v]) {
+                if (hasCycleDFS(graph, v, u, visited))
+                    return true;
+            } else if (graph[u][v] && v != parent) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    int isContainsCycle(ariel::graph g){//not working need to fix!!!!!!!!!
+        vector<int>::size_type n = (vector<int>::size_type)g.getV();
+        vector<bool> visited(n, false);
+
+        for (vector<int>::size_type u = 0; u < n; ++u) {
+            if (!visited[u] && hasCycleDFS(g.getAdjMat(), u, (vector<int>::size_type)-1, visited))
+                return true;
+        }
+
+        return false;
+    }
+
+    int isBipartite(ariel::graph g){//not working for bigger mat!!!!!!!!!!
+        vector<int>::size_type n = (vector<int>::size_type)g.getV();
+        vector<int> colors(n, -1); // Initialize all vertices with no color
+        vector<unordered_set<int>> groups(2); // Two groups of vertices
+
+        // Perform BFS to color vertices and check bipartiteness
+        for (vector<int>::size_type i = 0; i < n; ++i) {
+            if (colors[i] != -1) continue; // Skip already colored vertices
+            colors[i] = 0; // Color the starting vertex with 0
+            groups[0].insert(i); // Add it to the first group
+
+            queue<int> q;
+            q.push(i);
+
+            while (!q.empty()) {
+                vector<int>::size_type u = (vector<int>::size_type)q.front();
+                q.pop();
+
+                for (vector<int>::size_type v = 0; v < n; ++v) {
+                    if (g.getAdjMat()[u][v] != 0) {
+                        if (colors[v] == -1) {
+                            colors[v] = 1 - colors[u]; // Color opposite to u
+                            groups[(vector<int>::size_type)colors[v]].insert(v); // Add to corresponding group
+                            q.push(v);
+                        } else if (colors[v] == colors[u]) {
+                            return false; // Graph is not bipartite
+                        }
+                    }
+                }
+            }
+        }
+
+        // Print the two groups of vertices if the graph is bipartite
+        cout << "Group 1: ";
+        for (int vertex : groups[0]) {
+            cout << vertex << " ";
+        }
+        cout << endl;
+
+        cout << "Group 2: ";
+        for (int vertex : groups[1]) {
+            cout << vertex << " ";
+        }
+        cout << endl;
 
         return true; // Graph is bipartite
     }
 
     int negativeCycle(ariel::graph g){//do relax v times and check if in the last relax there was a change
-        int V = g.getV();
+        vector<int>::size_type n = (vector<int>::size_type)g.getV();
 
-        // Perform relaxation n-1 times for every vertex
-        for (vector<int>::size_type k = 0; k < V - 1; ++k) {
-            for (vector<int>::size_type u = 0; u < V; ++u) {
-                for (vector<int>::size_type v = 0; v < V; ++v) {
-                    // Update the distance if a shorter path is found
-                    if (g.getAdjMat()[u][k] != std::numeric_limits<int>::max() &&
-                        g.getAdjMat()[k][v] != std::numeric_limits<int>::max() &&
-                        g.getAdjMat()[u][k] + g.getAdjMat()[k][v] < g.getAdjMat()[u][v]) {
-                        g.getAdjMat()[u][v] = g.getAdjMat()[u][k] + g.getAdjMat()[k][v];
+        // Initialize distances with infinity
+        vector<int> dist(n, INF);
+
+        // Relax edges repeatedly
+        for (vector<int>::size_type i = 0; i < n - 1; ++i) {
+            for (vector<int>::size_type u = 0; u < n; ++u) {
+                for (vector<int>::size_type v = 0; v < n; ++v) {
+                    if (g.getAdjMat()[u][v] != INF && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
+                        dist[v] = dist[u] + g.getAdjMat()[u][v]; // Relax edge
                     }
                 }
             }
         }
 
-        // Perform relaxation one last time and check for changes
-        bool changed = false;
-        for (vector<int>::size_type u = 0; u < V; ++u) {
-            for (vector<int>::size_type v = 0; v < V; ++v) {
-                if (g.getAdjMat()[u][v] != std::numeric_limits<int>::max() &&
-                    g.getAdjMat()[u][v] != g.getAdjMat()[u][v]) {
-                    // There was a change in the graph
-                    changed = true;
-                    g.getAdjMat()[u][v] = g.getAdjMat()[u][v];
+        // Check for negative cycles
+        for (vector<int>::size_type u = 0; u < n; ++u) {
+            for (vector<int>::size_type v = 0; v < n; ++v) {
+                if (g.getAdjMat()[u][v] != INF && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
+                    // Negative cycle detected
+                    cout << "Graph contains negative cycle." << endl;
+                    return 1;
                 }
             }
         }
-
-        return changed;
+        return 0;
     }
 }

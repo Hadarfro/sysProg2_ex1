@@ -4,7 +4,7 @@
 #define GRAPH_HPP
 
 using namespace std; 
-enum class State { UNDISCOVERED, DISCOVERED, PROCESSED };
+//enum class State { UNDISCOVERED, DISCOVERED, PROCESSED };
 namespace ariel{
     class graph{
         private:
@@ -21,7 +21,7 @@ namespace ariel{
             void DFS(unsigned int v, bool visited[]);
             int getV();
             vector<vector<int>> getAdjMat();
-            bool hasCycleDFS(unsigned int node, vector<vector<int>>& graph, vector<State>& state);
+            //bool hasCycleDFS(unsigned int node, vector<vector<int>>& graph, vector<State>& state);
     };
 };
 #endif // GRAPH_HPP
