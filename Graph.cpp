@@ -1,3 +1,8 @@
+/*
+ * Author: Hadar Froimowich.
+ * ID: 213118458
+ * Email: hadarfro12@gmail.com
+ */
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -61,11 +66,6 @@ using namespace std;
             
             this->V = g.size();
             this->adjMat = g;
-            // for (vector<int>::size_type i = 0; i < V;i++) {
-            //     for(vector<int>::size_type j = 0; j < V; j++){
-            //         adjMat[i][j] = g[i][j];
-            //     }
-            // }
         }
 
         void graph::printGraph(){//print the number of vertex and edges

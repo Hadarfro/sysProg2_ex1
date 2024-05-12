@@ -1,5 +1,10 @@
+/*
+ * Author: Hadar Froimowich.
+ * ID: 213118458
+ * Email: hadarfro12@gmail.com
+ */
 #define DOCTEST_CONFIG_IMPLEMENT
-#include "doctest.h"
+#include "doctest.hpp"
 using namespace doctest;
 
 const int MIN_TESTS = 20;
