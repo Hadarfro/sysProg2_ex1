@@ -91,13 +91,7 @@ TEST_CASE("Test shortestPath")
     ariel::graph g4;
     g4.loadGraph({{0, 1, 0}, {0, 0, 1}, {1, 0, 0}});
     CHECK(Algorithms::shortestPath(g4, 0, 2) == 2); // Shortest path traverses the cycle
-
-    // // Case 2: Shortest path with negative weights
-    // ariel::graph g2;
-    // g2.loadGraph({{0, -1, 0}, {0, 0, -1}, {-1, 0, 0}});
-    // CHECK(Algorithms::shortestPath(g2, 0, 2) == -2); // Shortest path with negative weights
-
-    // Case 3: Shortest path between disconnected vertices
+    
     ariel::graph g5;
     g5.loadGraph({{0, 1, 0}, {0, 0, 0}, {0, 0, 0}});
     CHECK(Algorithms::shortestPath(g5, 0, 2) == -1); // No path between disconnected vertices
