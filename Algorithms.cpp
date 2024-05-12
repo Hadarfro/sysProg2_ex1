@@ -22,7 +22,10 @@ namespace Algorithms {
     
     int isConnected(ariel::graph g){//done
         vector<int>::size_type n = (vector<int>::size_type)g.getV();
-
+        if(g.getV() == 0){
+            cout << "the graph is connected" << endl;
+            return true;
+        }
         // Initialize visited array
         vector<bool> visited(n, false);
 
@@ -57,7 +60,9 @@ namespace Algorithms {
 
     int shortestPath(ariel::graph g,std::vector<int>::size_type start,std::vector<int>::size_type end){//done
         vector<int>::size_type n = (vector<int>::size_type)g.getV();
-
+        if(start == end){
+            return 0;
+        }
         // Initialize distances with infinity
         vector<int> dist(n, INF);
         dist[start] = 0;
@@ -103,25 +108,27 @@ namespace Algorithms {
         }
         shortestPath.push_back(start);
         reverse(shortestPath.begin(), shortestPath.end());
+        int count = 0;
         if (!shortestPath.empty()) {
             cout << "Shortest path from " << start << " to " << end << ": ";
             for (vector<int>::size_type i = 0; i < shortestPath.size(); ++i) {
                 cout << shortestPath[i];
+                count = shortestPath[i];
                 if (i < shortestPath.size() - 1){
                     cout << " -> ";
                 }
             }
             cout << endl;
         }
-        return 1;
+        return count;
     }
 
-    bool hasCycleDFS( vector<vector<int>> graph, vector<int>::size_type u, vector<int>::size_type parent, vector<bool>& visited,vector<int> cycleVertices) {
+    bool hasCycleDFS( vector<vector<int>> graph, vector<int>::size_type u, vector<int>::size_type parent, vector<bool>& visited,vector<int>& cycleVertices) {
         visited[u] = true;
         cycleVertices.push_back(u); // Add current vertex to the cycle
 
         for (size_t v = 0; v < graph.size(); ++v) {
-            if (graph[u][v]) {
+             if (graph[u][v]) {
                 if (!visited[v]) {
                     if (hasCycleDFS(graph, v, u, visited, cycleVertices)) {
                         return true;
@@ -213,12 +220,12 @@ namespace Algorithms {
 
         // Initialize distances with infinity
         vector<int> dist(n, INF);
-
+        dist[0] = 0;
         // Relax edges repeatedly
         for (vector<int>::size_type i = 0; i < n - 1; ++i) {
             for (vector<int>::size_type u = 0; u < n; ++u) {
                 for (vector<int>::size_type v = 0; v < n; ++v) {
-                    if (g.getAdjMat()[u][v] != INF && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
+                    if (g.getAdjMat()[u][v] != 0 && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
                         dist[v] = dist[u] + g.getAdjMat()[u][v]; // Relax edge
                     }
                 }
@@ -228,14 +235,14 @@ namespace Algorithms {
         // Check for negative cycles
         for (vector<int>::size_type u = 0; u < n; ++u) {
             for (vector<int>::size_type v = 0; v < n; ++v) {
-                if (g.getAdjMat()[u][v] != INF && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
+                if (g.getAdjMat()[u][v] != 0 && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
                     // Negative cycle detected
                     cout << "Graph contains negative cycle." << endl;
-                    return 1;
+                    return true;
                 }
             }
         }
         cout << "false" << endl;
-        return 0;
+        return false;
     }
 }

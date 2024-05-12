@@ -63,7 +63,9 @@ using namespace std;
 
         void graph::loadGraph(vector<vector<int>> g) {
             // Reinitialize the current graph object with the new graph data
-            
+            if(g.size() != g[0].size()||g.size() == 0){
+                throw std::invalid_argument("Invalid graph: The graph is not a square matrix or is empty.");
+            }
             this->V = g.size();
             this->adjMat = g;
         }
