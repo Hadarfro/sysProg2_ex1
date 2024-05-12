@@ -7,31 +7,50 @@
 #include <algorithm>
 #include "Algorithms.hpp"
 #include "Graph.hpp"
-const int INF = numeric_limits<int>::max(); // Represents infinity
+const int INF = numeric_limits<int>::max(); // infinity
 
 using namespace std;
 using namespace ariel;
 
 
-namespace Algorithms{
-    int isConnected(ariel::graph g){
-        bool* visited = new bool[g.getV()]{false};
-        // Start DFS from the first vertex
-        g.DFS(0, visited);
-        // Check if all vertices are connected
-        for (std::vector<int>::size_type i = 0; i < g.getV(); i++){
-            if (!visited[i]) {
-                delete[] visited;
-                cout<<"false"<<endl;
-                return false;
+namespace Algorithms {
+    
+    int isConnected(ariel::graph g){//done
+        vector<int>::size_type n = (vector<int>::size_type)g.getV();
+
+        // Initialize visited array
+        vector<bool> visited(n, false);
+
+        // Perform BFS from vertex 0
+        queue<int> q;
+        q.push(0);
+        visited[0] = true;
+
+        while (!q.empty()) {
+            vector<int>::size_type u = (vector<int>::size_type)q.front();
+            q.pop();
+            
+            // Visit all neighbors of u
+            for (vector<int>::size_type v = 0; v < n; v++) {
+                if (g.getAdjMat()[u][v] != 0 && !visited[v]) {
+                    q.push(v);
+                    visited[v] = true;
+                }
             }
         }
-        delete[] visited;
-        cout<<"true"<<endl;
-        return true;
+
+        // Check if all vertices were visited
+        for (vector<int>::size_type v = 0; v < n; v++) {
+            if (!visited[v]) {
+                cout << "the graph is not connected" << endl;
+                return false; // Graph is not connected
+            }
+        }
+        cout << "the graph is connected" << endl;
+        return true; // Graph is connected
     }
 
-    int shortestPath(ariel::graph g,std::vector<int>::size_type start,std::vector<int>::size_type end){//use bellman-ford
+    int shortestPath(ariel::graph g,std::vector<int>::size_type start,std::vector<int>::size_type end){//done
         vector<int>::size_type n = (vector<int>::size_type)g.getV();
 
         // Initialize distances with infinity
@@ -42,8 +61,8 @@ namespace Algorithms{
         for (vector<int>::size_type i = 0; i < n - 1; i++) {
             for (vector<int>::size_type u = 0; u < n; u++) {
                 for (vector<int>::size_type v = 0; v < n; ++v) {
-                    if (g.getAdjMat()[v][u] != INF && dist[v] != INF && dist[v] + g.getAdjMat()[v][u] < dist[u]) {
-                        dist[u] = dist[v] + g.getAdjMat()[v][u]; // Relax edge
+                    if (g.getAdjMat()[u][v] != 0 && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
+                        dist[v] = dist[u] + g.getAdjMat()[u][v]; // Relax edge
                     }
                 }
             }
@@ -52,7 +71,7 @@ namespace Algorithms{
         // Check for negative cycles
         for (vector<int>::size_type u = 0; u < n; ++u){
             for (vector<int>::size_type v = 0; v < n; ++v){
-                if (g.getAdjMat()[u][v] != INF && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
+                if (g.getAdjMat()[u][v] != 0 && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
                     // Negative cycle detected
                     cout << "Graph contains negative cycle." << endl;
                     return -1;
@@ -63,17 +82,18 @@ namespace Algorithms{
         // Reconstruct the shortest path
         vector<int> shortestPath;
         vector<int>::size_type cur = (vector<int>::size_type)end;
+        if(dist[cur] == INF){
+            cout << "there is no path" << endl;
+            return -1;
+        }
         while (cur != start){
             shortestPath.push_back(cur);
-            for (vector<int>::size_type v = 0 && cur != v ; v < n; ++v) {
+            for (vector<int>::size_type v = 0 ; v < n ; ++v) {
+                
                 if (g.getAdjMat()[v][cur] != INF && dist[v] != INF && dist[cur] == dist[v] + g.getAdjMat()[v][cur]) {
                     cur = v;
-                    if (cur == -1) {
-                        cout << "No path exists from " << start << " to " << end << endl;
-                        return 0;
-                    }
                     break;
-                }
+                } 
             }
         }
         shortestPath.push_back(start);
@@ -91,33 +111,50 @@ namespace Algorithms{
         return 1;
     }
 
-    bool hasCycleDFS( vector<vector<int>> graph, vector<int>::size_type u, vector<int>::size_type parent, vector<bool>& visited) {
+    bool hasCycleDFS( vector<vector<int>> graph, vector<int>::size_type u, vector<int>::size_type parent, vector<bool>& visited,vector<int> cycleVertices) {
         visited[u] = true;
-        for (vector<int>::size_type v = 0; v < graph.size(); ++v) {
-            if (graph[u][v] && !visited[v]) {
-                if (hasCycleDFS(graph, v, u, visited)){
+        cycleVertices.push_back(u); // Add current vertex to the cycle
+
+        for (size_t v = 0; v < graph.size(); ++v) {
+            if (graph[u][v]) {
+                if (!visited[v]) {
+                    if (hasCycleDFS(graph, v, u, visited, cycleVertices)) {
+                        return true;
+                    }
+                } else if (v != parent) {
+                    // Back edge detected, indicating a cycle
+                    cout << "Cycle detected: ";
+                    for (size_t i = 0; i < cycleVertices.size(); ++i) {
+                        cout << cycleVertices[i];
+                        if (i < cycleVertices.size() - 1) {
+                            cout << " -> ";
+                        }
+                    }
+                    cout << endl;
                     return true;
                 }
-            } 
-            else if (graph[u][v] && v != parent) {
-                return true;
             }
         }
+        // Remove current vertex from the cycle before backtracking
+        cycleVertices.pop_back();
         return false;
     }
 
     int isContainsCycle(ariel::graph g){//not working need to fix!!!!!!!!!
         vector<int>::size_type n = (vector<int>::size_type)g.getV();
         vector<bool> visited(n, false);
+        vector<int> cycleVertices;
         for (vector<int>::size_type u = 0; u < n; ++u) {
-            if (!visited[u] && hasCycleDFS(g.getAdjMat(), u, (vector<int>::size_type)-1, visited)){
+            if (!visited[u] && hasCycleDFS(g.getAdjMat(), u, (vector<int>::size_type)-1, visited,cycleVertices)){
+                cout << "the graph Contains Cycle" << endl;
                 return true;
             }
         }
+        cout << "the graph is not Contains Cycle" << endl;
         return false;
     }
 
-    int isBipartite(ariel::graph g){
+    int isBipartite(ariel::graph g){//done
         vector<int>::size_type n = (vector<int>::size_type)g.getV();
         vector<int> colors(n, -1); // Initialize all vertices with no color
         vector<unordered_set<int>> groups(2); // Two groups of vertices
@@ -142,6 +179,7 @@ namespace Algorithms{
                             q.push(v);
                         } 
                         else if (colors[v] == colors[u]) {
+                            cout << "Graph is not bipartite" << endl;
                             return false; // Graph is not bipartite
                         }
                     }
@@ -165,7 +203,7 @@ namespace Algorithms{
         return true; // Graph is bipartite
     }
 
-    int negativeCycle(ariel::graph g){
+    int negativeCycle(ariel::graph g){//done
         vector<int>::size_type n = (vector<int>::size_type)g.getV();
 
         // Initialize distances with infinity

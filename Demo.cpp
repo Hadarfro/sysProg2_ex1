@@ -53,12 +53,12 @@ int main()
         {0, 0, 4, 0, 5},
         {0, 0, 0, 5, 0}};
     g.loadGraph(graph3); // Load the graph to the object.
-
+    
     g.printGraph();                                    // Should print: "Graph with 5 vertices and 10 edges."
     Algorithms::isConnected(g);        // Should print: "1" (true).
     Algorithms::shortestPath(g, 0, 4); // Should print: 0->2->3->4.
-    cout << Algorithms::isContainsCycle(g) << endl;    // Should print: "0" (false).
-    Algorithms::isBipartite(g);        // Should print: "The graph is bipartite: A={0, 2, 4}, B={1, 3}."
+    Algorithms::isContainsCycle(g);    // Should print: "0" (false).
+    Algorithms::isBipartite(g);        // Should print: "The graph is not bipartite"
     
     // 5x4 matrix that reprsents invalid graph.
     vector<vector<int>> graph4 = {

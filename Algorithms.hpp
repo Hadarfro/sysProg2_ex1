@@ -4,9 +4,7 @@
 
 using namespace std; 
 using namespace ariel;
-struct Edge {
-    int source, destination, weight;
-};
+
 namespace Algorithms{
     int isConnected(ariel::graph g);
     int shortestPath(ariel::graph g,std::vector<int>::size_type start,std::vector<int>::size_type end);

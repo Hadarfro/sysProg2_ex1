@@ -1,17 +1,16 @@
-    #include <iostream>
-    #include <vector>
-    #include <queue>
-    #include <stack>
-    #include <unordered_set>
-    #include "Graph.hpp"
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <unordered_set>
+#include "Graph.hpp"
 
-    using namespace std;
+using namespace std;
 
     namespace ariel{
-        enum class State { VISITING, UNVISITED, VISITED };
         graph::graph(){//defult constractor
             this->V = 0;
-            this->adjMat.clear();
+
         }
         // Destructor to deallocate memory
         graph::~graph() {
@@ -27,21 +26,6 @@
                 }
             }
         }
-
-            // bool graph::hasCycleDFS(unsigned int node, vector<vector<int>>& graph, vector<State>& state){
-            //     state[node] = State::VISITING; // Mark node as visiting
-
-            //     for (int neighbor : graph[node]) {
-            //         if (state[neighbor] == State::VISITING) {
-            //             return true; // Found a back edge, cycle detected
-            //         } else if (state[neighbor] == State::UNVISITED && hasCycleDFS(neighbor, graph, state)) {
-            //             return true; // Cycle detected in neighbor's subtree
-            //         }
-            //     }
-
-            //     state[node] = State::VISITED; // Mark node as visited
-            //     return false;
-            // }
 
         int graph::printPath(std::vector<int>& parent, unsigned int u) {
             std::vector<int> path;
@@ -76,18 +60,12 @@
             // Reinitialize the current graph object with the new graph data
             
             this->V = g.size();
-
-            for (const auto& row : g) {
-                // Create a new row vector for the copy
-                vector<int> rowCopy;
-
-                // Iterate over each element in the row and copy it
-                for (int value : row) {
-                    rowCopy.push_back(value);
-                }
-                // Add the copied row to the copy vector
-                this->adjMat.push_back(rowCopy);
-            }
+            this->adjMat = g;
+            // for (vector<int>::size_type i = 0; i < V;i++) {
+            //     for(vector<int>::size_type j = 0; j < V; j++){
+            //         adjMat[i][j] = g[i][j];
+            //     }
+            // }
         }
 
         void graph::printGraph(){//print the number of vertex and edges
