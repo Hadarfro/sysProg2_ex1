@@ -20,9 +20,9 @@ using namespace ariel;
 
 namespace Algorithms {
     
-    int isConnected(ariel::graph g){//done
-        vector<int>::size_type n = (vector<int>::size_type)g.getV();
-        if(g.getV() == 0){
+    int isConnected(ariel::graph g){ // function that receives a graph and check if it's connected
+        size_t n = (size_t)g.getV(); 
+        if(g.getV() == 0){ // trivially connected
             cout << "the graph is connected" << endl;
             return true;
         }
@@ -35,11 +35,11 @@ namespace Algorithms {
         visited[0] = true;
 
         while (!q.empty()) {
-            vector<int>::size_type u = (vector<int>::size_type)q.front();
+            size_t u = (size_t)q.front();
             q.pop();
             
             // Visit all neighbors of u
-            for (vector<int>::size_type v = 0; v < n; v++) {
+            for (size_t v = 0; v < n; v++) {
                 if (g.getAdjMat()[u][v] != 0 && !visited[v]) {
                     q.push(v);
                     visited[v] = true;
@@ -48,7 +48,7 @@ namespace Algorithms {
         }
 
         // Check if all vertices were visited
-        for (vector<int>::size_type v = 0; v < n; v++) {
+        for (size_t v = 0; v < n; v++) {
             if (!visited[v]) {
                 cout << "the graph is not connected" << endl;
                 return false; // Graph is not connected
@@ -58,8 +58,9 @@ namespace Algorithms {
         return true; // Graph is connected
     }
 
-    int shortestPath(ariel::graph g,std::vector<int>::size_type start,std::vector<int>::size_type end){//done
-        vector<int>::size_type n = (vector<int>::size_type)g.getV();
+    //finds the shortest path between the 2 vertcis using bellman-ford
+    int shortestPath(ariel::graph g,size_t start,size_t end){
+        size_t n = (size_t)g.getV();
         if(start == end){
             return 0;
         }
@@ -68,9 +69,9 @@ namespace Algorithms {
         dist[start] = 0;
 
         // Relax edges repeatedly n-1 times
-        for (vector<int>::size_type i = 0; i < n - 1; i++) {
-            for (vector<int>::size_type u = 0; u < n; u++) {
-                for (vector<int>::size_type v = 0; v < n; ++v) {
+        for (size_t i = 0; i < n - 1; i++) {
+            for (size_t u = 0; u < n; u++) {
+                for (size_t v = 0; v < n; ++v) {
                     if (g.getAdjMat()[u][v] != 0 && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
                         dist[v] = dist[u] + g.getAdjMat()[u][v]; // Relax edge
                     }
@@ -79,8 +80,8 @@ namespace Algorithms {
         }
 
         // Check for negative cycles
-        for (vector<int>::size_type u = 0; u < n; ++u){
-            for (vector<int>::size_type v = 0; v < n; ++v){
+        for (size_t u = 0; u < n; ++u){
+            for (size_t v = 0; v < n; ++v){
                 if (g.getAdjMat()[u][v] != 0 && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
                     // Negative cycle detected
                     cout << "Graph contains negative cycle." << endl;
@@ -91,15 +92,14 @@ namespace Algorithms {
 
         // Reconstruct the shortest path
         vector<int> shortestPath;
-        vector<int>::size_type cur = (vector<int>::size_type)end;
+        size_t cur = (size_t)end;
         if(dist[cur] == INF){
             cout << "there is no path" << endl;
             return -1;
         }
         while (cur != start){
             shortestPath.push_back(cur);
-            for (vector<int>::size_type v = 0 ; v < n ; ++v) {
-                
+            for (size_t v = 0 ; v < n ; ++v) {   
                 if (g.getAdjMat()[v][cur] != INF && dist[v] != INF && dist[cur] == dist[v] + g.getAdjMat()[v][cur]) {
                     cur = v;
                     break;
@@ -111,7 +111,7 @@ namespace Algorithms {
         int count = 0;
         if (!shortestPath.empty()) {
             cout << "Shortest path from " << start << " to " << end << ": ";
-            for (vector<int>::size_type i = 0; i < shortestPath.size(); ++i) {
+            for (size_t i = 0; i < shortestPath.size(); ++i) {
                 cout << shortestPath[i];
                 count = shortestPath[i];
                 if (i < shortestPath.size() - 1){
@@ -123,7 +123,8 @@ namespace Algorithms {
         return count;
     }
 
-    bool hasCycleDFS( vector<vector<int>> graph, vector<int>::size_type u, vector<int>::size_type parent, vector<bool>& visited,vector<int>& cycleVertices) {
+    //find a cycle using BFS and finding back edges
+    bool hasCycleDFS( vector<vector<int>> graph, size_t u, size_t parent, vector<bool>& visited,vector<int>& cycleVertices) {
         visited[u] = true;
         cycleVertices.push_back(u); // Add current vertex to the cycle
 
@@ -152,27 +153,27 @@ namespace Algorithms {
         return false;
     }
 
-    int isContainsCycle(ariel::graph g){//not working need to fix!!!!!!!!!
-        vector<int>::size_type n = (vector<int>::size_type)g.getV();
+    int isContainsCycle(ariel::graph g){
+        size_t n = (size_t)g.getV();
         vector<bool> visited(n, false);
         vector<int> cycleVertices;
-        for (vector<int>::size_type u = 0; u < n; ++u) {
-            if (!visited[u] && hasCycleDFS(g.getAdjMat(), u, (vector<int>::size_type)-1, visited,cycleVertices)){
+        for (size_t u = 0; u < n; ++u) {
+            if (!visited[u] && hasCycleDFS(g.getAdjMat(), u, (size_t)-1, visited,cycleVertices)){
                 cout << "the graph Contains Cycle" << endl;
                 return true;
             }
         }
-        cout << "the graph is not Contains Cycle" << endl;
+        cout << "the graph isn't Contains Cycle" << endl;
         return false;
     }
 
-    int isBipartite(ariel::graph g){//done
-        vector<int>::size_type n = (vector<int>::size_type)g.getV();
+    int isBipartite(ariel::graph g){
+        size_t n = (size_t)g.getV();
         vector<int> colors(n, -1); // Initialize all vertices with no color
         vector<unordered_set<int>> groups(2); // Two groups of vertices
 
         // Perform BFS to color vertices and check bipartiteness
-        for (vector<int>::size_type i = 0; i < n; ++i) {
+        for (size_t i = 0; i < n; ++i) {
             if (colors[i] != -1){ 
                 continue; // Skip already colored vertices
             }
@@ -181,13 +182,13 @@ namespace Algorithms {
             queue<int> q;
             q.push(i);
             while(!q.empty()){
-                vector<int>::size_type u = (vector<int>::size_type)q.front();
+                size_t u = (size_t)q.front();
                 q.pop();
-                for (vector<int>::size_type v = 0; v < n; ++v) {
+                for (size_t v = 0; v < n; ++v) {
                     if (g.getAdjMat()[u][v] != 0) {
-                        if (colors[v] == -1) {
-                            colors[v] = 1 - colors[u]; // Color opposite to u
-                            groups[(vector<int>::size_type)colors[v]].insert(v); // Add to corresponding group
+                        if (colors[v] == -1) { // if the vertex don't have a color
+                            colors[v] = 1 - colors[u]; // Color it the opposite to u
+                            groups[(size_t)colors[v]].insert(v); // Add to corresponding group
                             q.push(v);
                         } 
                         else if (colors[v] == colors[u]) {
@@ -215,16 +216,17 @@ namespace Algorithms {
         return true; // Graph is bipartite
     }
 
-    int negativeCycle(ariel::graph g){//done
-        vector<int>::size_type n = (vector<int>::size_type)g.getV();
+    //find a negative cycle using relax n times and checking if there was a change in the last relax
+    int negativeCycle(ariel::graph g){
+        size_t n = (size_t)g.getV();
 
         // Initialize distances with infinity
         vector<int> dist(n, INF);
         dist[0] = 0;
         // Relax edges repeatedly
-        for (vector<int>::size_type i = 0; i < n - 1; ++i) {
-            for (vector<int>::size_type u = 0; u < n; ++u) {
-                for (vector<int>::size_type v = 0; v < n; ++v) {
+        for (size_t i = 0; i < n - 1; ++i) {
+            for (size_t u = 0; u < n; ++u) {
+                for (size_t v = 0; v < n; ++v) {
                     if (g.getAdjMat()[u][v] != 0 && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
                         dist[v] = dist[u] + g.getAdjMat()[u][v]; // Relax edge
                     }
@@ -233,8 +235,8 @@ namespace Algorithms {
         }
 
         // Check for negative cycles
-        for (vector<int>::size_type u = 0; u < n; ++u) {
-            for (vector<int>::size_type v = 0; v < n; ++v) {
+        for (size_t u = 0; u < n; ++u) {
+            for (size_t v = 0; v < n; ++v) {
                 if (g.getAdjMat()[u][v] != 0 && dist[u] != INF && dist[u] + g.getAdjMat()[u][v] < dist[v]) {
                     // Negative cycle detected
                     cout << "Graph contains negative cycle." << endl;

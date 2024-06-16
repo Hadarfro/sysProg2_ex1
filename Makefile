@@ -8,20 +8,23 @@ CXX = clang++
 CXXFLAGS = -std=c++11 -g -O0 -Werror -Wsign-conversion
 VALGRIND_FLAGS = -v --leak-check=full --show-leak-kinds=all --error-exitcode=99
 
-SOURCES = Graph.cpp Algorithms.cpp TestCounter.cpp Test.cpp
+# Define all source files
+SOURCES = Graph.cpp Algorithms.cpp TestCounter.cpp Test.cpp Demo.cpp
+# Define object files (automatically replace .cpp with .o)
 OBJECTS = $(SOURCES:.cpp=.o)
 
-# Default target to run the executables
-run: demo test
-	./demo 
-	./test
+# Define executables
+EXECS = Demo test
 
-# Build the demo executable
-demo: Demo.o $(filter-out TestCounter.o Test.o, $(OBJECTS))
+# Default target to build all executables
+all: $(EXECS)
+
+# Build the Demo executable
+Demo: Demo.o $(filter-out TestCounter.o Test.o Demo.o, $(OBJECTS))
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 # Build the test executable
-test: TestCounter.o Test.o $(filter-out Demo.o, $(OBJECTS))
+test: TestCounter.o Test.o $(filter-out Demo.o TestCounter.o Test.o, $(OBJECTS))
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 # Run clang-tidy on the source files
@@ -29,8 +32,8 @@ tidy:
 	clang-tidy $(SOURCES) -checks=bugprone-*,clang-analyzer-*,cppcoreguidelines-*,performance-*,portability-*,readability-*,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-owning-memory --warnings-as-errors=-* --
 
 # Run valgrind to check for memory leaks
-valgrind: demo test
-	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./demo 2>&1 | { egrep "lost| at " || true; }
+valgrind: $(EXECS)
+	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./Demo 2>&1 | { egrep "lost| at " || true; }
 	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test 2>&1 | { egrep "lost| at " || true; }
 
 # Compile object files
@@ -39,4 +42,4 @@ valgrind: demo test
 
 # Clean build artifacts
 clean:
-	rm -f *.o demo test
+	rm -f *.o $(EXECS)

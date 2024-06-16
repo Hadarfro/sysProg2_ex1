@@ -13,14 +13,12 @@
 using namespace std;
 
     namespace ariel{
-        graph::graph(){//defult constractor
+        graph::graph(){ //defult constractor
             this->V = 0;
 
         }
         // Destructor to deallocate memory
-        graph::~graph() {
-            this->adjMat.clear();
-        }
+        graph::~graph() = default;
 
         // Depth-First Search (DFS)
         void graph::DFS(unsigned int v, bool visited[]) {
@@ -32,8 +30,9 @@ using namespace std;
             }
         }
 
-        int graph::printPath(std::vector<int>& parent, unsigned int u) {
-            std::vector<int> path;
+        //a function that receive the parents and a child and prints the path between them
+        int graph::printPath(vector<int>& parent, unsigned int u) {   
+            vector<int> path;
             unsigned int v = u;
             int t = (int)u;
 
@@ -45,11 +44,11 @@ using namespace std;
             } while (v != u && t != u);
 
             // Print the cycle
-            std::cout << "Cycle: ";
+            cout << "Cycle: ";
             for (unsigned int i = path.size() - 1; i >= 0; --i) {
-                std::cout << path[i] << " ";
+                cout << path[i] << " ";
             }
-            std::cout << std::endl;
+            cout << endl;
             return 1;
         }
 
@@ -61,16 +60,17 @@ using namespace std;
             return this->adjMat;
         }
 
+        //function that receives a adjency matrix and load it to be an the object Graph 
         void graph::loadGraph(vector<vector<int>> g) {
             // Reinitialize the current graph object with the new graph data
             if(g.size() != g[0].size()||g.size() == 0){
-                throw std::invalid_argument("Invalid graph: The graph is not a square matrix or is empty.");
+                throw invalid_argument("Invalid graph: The graph is not a square matrix or is empty.");
             }
             this->V = g.size();
             this->adjMat = g;
         }
 
-        void graph::printGraph(){//print the number of vertex and edges
+        void graph::printGraph(){ //print the number of vertex and edges
             // Print the neighbor matrix
             int count = 0;
             for (unsigned int i = 0; i < this->V; ++i) {

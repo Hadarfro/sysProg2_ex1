@@ -21,7 +21,7 @@ TEST_CASE("Test isConnected"){
     g2.loadGraph({{0}});
     CHECK(Algorithms::isConnected(g2) == true); // Single vertex graph is connected
 
-    // Case 3: Disconnected graph
+    // Case 3: Disconnected graph with no edges
     ariel::graph g3;
     g3.loadGraph({{0, 0}, {0, 0}});
     CHECK(Algorithms::isConnected(g3) == false); // Disconnected graph
@@ -43,17 +43,17 @@ TEST_CASE("Test isConnected"){
     g.loadGraph(graph5);
     CHECK(Algorithms::isConnected(g) == false);
 
-    // Case 1: Complete graph
+    // Complete graph
     ariel::graph g6;
     g6.loadGraph({{0, 1, 1}, {1, 0, 1}, {1, 1, 0}});
     CHECK(Algorithms::isConnected(g6) == true); // Complete graph is connected
 
-    // Case 2: Disconnected graph with a single isolated vertex
+    // Disconnected graph with a single isolated vertex
     ariel::graph g7;
     g7.loadGraph({{0, 1, 0}, {1, 0, 0}, {0, 0, 0}});
     CHECK(Algorithms::isConnected(g7) == false); // Disconnected graph with an isolated vertex
 
-    // Case 3: Random disconnected graph
+    // Random disconnected graph
     ariel::graph g8;
     g8.loadGraph({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 0, 1}, {0, 0, 1, 0}});
     CHECK(Algorithms::isConnected(g8) == false); // Disconnected graph
@@ -70,8 +70,8 @@ TEST_CASE("Test shortestPath")
     ariel::graph g2;
     g2.loadGraph({{0, 0}, {0, 0}});
     CHECK(Algorithms::shortestPath(g2, 0, 1) == -1); // No path between vertices
+    
     ariel::graph g;
-
     vector<vector<int>> graph3 = {
         {0, 1, 0},
         {1, 0, 1},
@@ -97,8 +97,8 @@ TEST_CASE("Test shortestPath")
     CHECK(Algorithms::shortestPath(g5, 0, 2) == -1); // No path between disconnected vertices
 
 }
-TEST_CASE("Test isContainsCycle")
-{
+
+TEST_CASE("Test isContainsCycle"){
     // Case 1: Empty graph
     ariel::graph g1;
     CHECK(Algorithms::isContainsCycle(g1) == false); // Empty graph doesn't contain cycles
@@ -125,8 +125,8 @@ TEST_CASE("Test isContainsCycle")
     g.loadGraph(graph4);
     CHECK(Algorithms::isContainsCycle(g) == true);
 }
-TEST_CASE("Test isBipartite")
-{
+
+TEST_CASE("Test isBipartite"){
     // Case 1: Empty graph
     ariel::graph g1;
     CHECK(Algorithms::isBipartite(g1) == 1); // Empty graph is trivially bipartite
@@ -163,7 +163,7 @@ TEST_CASE("Test isBipartite")
     CHECK(Algorithms::isBipartite(g) == 0);
 }
 
-TEST_CASE("Test negativeCycle - More Cases") {
+TEST_CASE("Test negativeCycle") {
     // Case 1: No negative cycle
     ariel::graph g1;
     g1.loadGraph({{0, 1, 0}, {0, 0, 1}, {1, 0, 0}});
@@ -194,5 +194,5 @@ TEST_CASE("Test invalid graph") {
         {2, 3, 0, 4},
         {0, 0, 4, 0},
         {0, 0, 0, 5}};
-    CHECK_THROWS(g.loadGraph(graph6)); // Pass `graph6` to loadGraph function
+    CHECK_THROWS(g.loadGraph(graph6)); // Pass graph6 to loadGraph function
 }

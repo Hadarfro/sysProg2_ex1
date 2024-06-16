@@ -16,8 +16,7 @@ namespace ariel{
             int V; // Number of vertices
             vector<vector<int>> adjMat; // Adjacency matrix that represent the edges of the graph
 
-        public:
-            
+        public:   
             graph();
             ~graph();
             int printPath(std::vector<int>& parent, unsigned int u);
@@ -26,7 +25,6 @@ namespace ariel{
             void DFS(unsigned int v, bool visited[]);
             int getV();
             vector<vector<int>> getAdjMat();
-            //bool hasCycleDFS(unsigned int node, vector<vector<int>>& graph, vector<State>& state);
     };
 };
 #endif // GRAPH_HPP
